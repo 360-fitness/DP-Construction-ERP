@@ -24,6 +24,14 @@
   position: absolute; top: 0; left: 0; bottom: 0; width: 6px;
   background: var(--accent);
 }
+.auth-brand__logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #fff;
+  margin-bottom: 20px;
+}
 .auth-brand__tag {
   display: inline-block;
   font-family: var(--font-mono);
