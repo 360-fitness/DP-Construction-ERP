@@ -1,0 +1,66 @@
+rules_version = '2';
+
+// =============================================================
+// FIRESTORE SECURITY RULES — Phase 1
+// Paste into Firebase Console > Firestore Database > Rules.
+// As you add modules in later phases, add a matching block below
+// following the same pattern.
+// =============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && userRole() == 'Administrator';
+    }
+
+    function isAdminOrDirector() {
+      return isSignedIn() && userRole() in ['Administrator', 'Director'];
+    }
+
+    function isStaff() {
+      // Anyone except a plain Employee — i.e. can manage clients/quotes/invoices etc.
+      return isSignedIn() && userRole() in ['Administrator', 'Director', 'Bookkeeper'];
+    }
+
+    // Users can read their own profile; only an Administrator can write user docs.
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // Clients — staff can read/write, employees cannot.
+    match /clients/{clientId} {
+      allow read: if isStaff();
+      allow create, update: if isStaff();
+      allow delete: if false; // soft-delete only, never hard delete
+    }
+
+    // Company settings — everyone signed in can read (needed for quote/invoice
+    // templates later), only Administrators can write.
+    match /settings/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Audit log — append-only, readable by admins/directors, never editable.
+    match /auditLog/{entryId} {
+      allow read: if isAdminOrDirector();
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    // Deny everything else by default until later phases add rules for it.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

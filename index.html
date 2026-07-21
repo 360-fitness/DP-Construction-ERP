@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DP Construction ERP</title>
+</head>
+<body>
+<script type="module">
+  import { auth } from "./js/firebase/firebase-init.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  onAuthStateChanged(auth, (user) => {
+    window.location.replace(user ? "pages/dashboard.html" : "pages/login.html");
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign In · DP Construction ERP</title>
+<link rel="stylesheet" href="../assets/css/main.css" />
+<link rel="stylesheet" href="../assets/css/auth.css" />
+</head>
+<body>
+
+<div class="auth-shell">
+  <div class="auth-brand">
+    <span class="auth-brand__tag">DP CONSTRUCTION GROUP (PTY) LTD</span>
+    <h1>Run the site.<br/>Not the paperwork.</h1>
+    <p>Quotes, projects, invoicing, payroll and reporting for DP Construction &amp; Maintenance — all in one place.</p>
+  </div>
+
+  <div class="auth-panel">
+    <h2>Sign in</h2>
+    <p class="auth-panel__sub">Enter your company credentials to continue.</p>
+
+    <div id="auth-error" class="auth-error"></div>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" autocomplete="username" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required />
+      </div>
+      <div class="auth-panel__row">
+        <label class="checkbox-row">
+          <input type="checkbox" id="remember" checked />
+          Remember me
+        </label>
+        <button type="button" id="forgot-link" class="auth-panel__link">Forgot password?</button>
+      </div>
+      <button type="submit" id="login-btn" class="btn btn--primary">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="../js/pages/login.js"></script>
+</body>
+</html>

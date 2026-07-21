@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clients · DP Construction ERP</title>
+<link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-name">DP Construction</div>
+      <div class="sidebar__brand-sub">ERP System</div>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav"></nav>
+    <div class="sidebar__footer" id="sidebar-footer"></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__search">
+        <span class="topbar__search-icon">⌕</span>
+        <input type="text" id="client-search" placeholder="Search by name, company, client number…" />
+      </div>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme"></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <h1>Clients</h1>
+          <div class="page-header__meta" id="client-count-msg">Loading…</div>
+        </div>
+        <div class="flex gap-8">
+          <label class="checkbox-row" style="margin-right:8px;">
+            <input type="checkbox" id="show-archived" /> Show archived
+          </label>
+          <button class="btn btn--primary" id="add-client-btn">+ New Client</button>
+        </div>
+      </div>
+
+      <div id="clients-container">
+        <div class="loading-row"><span class="spinner"></span> Loading clients…</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add / Edit Client Modal -->
+<div class="modal-overlay" id="client-modal-overlay">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 id="modal-title" style="font-size:18px;">New Client</h3>
+      <button class="modal__close" id="modal-close-btn">✕</button>
+    </div>
+    <form id="client-form">
+      <input type="hidden" id="client-id" />
+      <div class="form-row">
+        <div class="field">
+          <label for="c-name">Contact Name *</label>
+          <input type="text" id="c-name" required />
+        </div>
+        <div class="field">
+          <label for="c-company">Company</label>
+          <input type="text" id="c-company" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="c-phone">Phone</label>
+          <input type="tel" id="c-phone" placeholder="082 123 4567" />
+        </div>
+        <div class="field">
+          <label for="c-email">Email</label>
+          <input type="email" id="c-email" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="c-vat">VAT Number</label>
+          <input type="text" id="c-vat" placeholder="10-digit VAT number" />
+        </div>
+        <div class="field">
+          <label for="c-gps">GPS Coordinates</label>
+          <input type="text" id="c-gps" placeholder="-33.9249, 18.4241" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="c-address">Address</label>
+        <textarea id="c-address"></textarea>
+      </div>
+      <div class="field">
+        <label for="c-notes">Notes</label>
+        <textarea id="c-notes"></textarea>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="modal-save-btn">Save Client</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="../js/pages/clients.js"></script>
+</body>
+</html>
