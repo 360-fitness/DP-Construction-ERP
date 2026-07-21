@@ -62,12 +62,18 @@ document.getElementById("settings-form").addEventListener("submit", async (e) =>
   saveBtn.disabled = true;
   saveBtn.textContent = "Saving…";
 
-  try {
-    let logoUrl;
-    if (pendingLogoFile) {
+  let logoUrl;
+  let logoFailed = false;
+  if (pendingLogoFile) {
+    try {
       logoUrl = await uploadCompanyLogo(pendingLogoFile);
+    } catch (err) {
+      console.error("Logo upload failed:", err);
+      logoFailed = true;
     }
+  }
 
+  try {
     const payload = {
       name: document.getElementById("s-name").value.trim(),
       tradingName: document.getElementById("s-trading").value.trim(),
@@ -89,7 +95,11 @@ document.getElementById("settings-form").addEventListener("submit", async (e) =>
     };
 
     await saveCompanySettings(currentUser, payload);
-    showToast("Settings saved.", "success");
+    if (logoFailed) {
+      showToast("Settings saved, but the logo upload failed. Check that Storage is enabled on the Blaze plan.", "warning", 6000);
+    } else {
+      showToast("Settings saved.", "success");
+    }
     pendingLogoFile = null;
   } catch (err) {
     console.error(err);
