@@ -22,6 +22,20 @@ function loadJsPDF() {
   return jsPDFPromise;
 }
 
+// Writes a possibly multi-line string (containing literal \n characters,
+// e.g. from a <textarea>) line by line, returning the y position after it.
+function writeMultilineText(doc, text, x, y, { maxWidth, lineHeight = 12 } = {}) {
+  const rawLines = String(text).split(/\r?\n/);
+  rawLines.forEach((rawLine) => {
+    const wrapped = maxWidth ? doc.splitTextToSize(rawLine, maxWidth) : [rawLine];
+    wrapped.forEach((line) => {
+      doc.text(line, x, y);
+      y += lineHeight;
+    });
+  });
+  return y;
+}
+
 // docData: { docType: 'QUOTE'|'INVOICE', number, date, expiryOrDueDate, client, items, totals, discountType, discountValue, vatRate, terms, depositNote, company }
 export async function generateDocumentPDF(docData) {
   const jsPDF = await loadJsPDF();
@@ -41,8 +55,14 @@ export async function generateDocumentPDF(docData) {
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(104, 111, 117);
-  y += 16;
-  if (company.address) { doc.text(company.address, margin, y, { maxWidth: 260 }); y += 28; } else { y += 12; }
+  y += 20;
+
+  if (company.address) {
+    y = writeMultilineText(doc, company.address, margin, y, { maxWidth: 260, lineHeight: 13 });
+    y += 4;
+  } else {
+    y += 12;
+  }
   if (company.vatNumber) { doc.text(`VAT No: ${company.vatNumber}`, margin, y); y += 14; }
   if (company.phone) { doc.text(`Tel: ${company.phone}`, margin, y); y += 14; }
   if (company.email) { doc.text(company.email, margin, y); }
@@ -62,7 +82,10 @@ export async function generateDocumentPDF(docData) {
     doc.text(`${docData.docType === "INVOICE" ? "Due" : "Valid Until"}: ${docData.expiryOrDueDate}`, pageWidth - margin, 104, { align: "right" });
   }
 
-  y = 160;
+  // Make sure the two-column header (company info vs. doc title) doesn't
+  // let the left column's height push content below the fixed divider —
+  // start the divider below whichever column ran longer.
+  y = Math.max(y + 20, 200);
   doc.setDrawColor(221, 217, 206);
   doc.line(margin, y, pageWidth - margin, y);
   y += 24;
@@ -70,12 +93,16 @@ export async function generateDocumentPDF(docData) {
   // ---- Client ----
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
+  doc.setTextColor(28, 32, 35);
   doc.text("Bill To:", margin, y);
   y += 15;
   doc.setFont("helvetica", "normal");
   doc.text(docData.client.name || "", margin, y); y += 14;
   if (docData.client.company) { doc.text(docData.client.company, margin, y); y += 14; }
-  if (docData.client.address) { doc.text(docData.client.address, margin, y, { maxWidth: 260 }); y += 28; }
+  if (docData.client.address) {
+    y = writeMultilineText(doc, docData.client.address, margin, y, { maxWidth: 260, lineHeight: 13 });
+    y += 4;
+  }
   if (docData.client.vatNumber) { doc.text(`VAT No: ${docData.client.vatNumber}`, margin, y); y += 14; }
 
   y += 20;
@@ -94,12 +121,17 @@ export async function generateDocumentPDF(docData) {
   doc.text("Total", colX.total, y + 15, { align: "right" });
   y += 22;
 
+  // Extra breathing room so the first row's text doesn't sit inside the
+  // black header bar (which made it render as invisible black-on-black).
+  y += 14;
+
   doc.setTextColor(28, 32, 35);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   docData.items.forEach((item, i) => {
     if (y > 720) { doc.addPage(); y = 56; }
     if (i % 2 === 1) { doc.setFillColor(241, 239, 233); doc.rect(margin, y - 14, pageWidth - margin * 2, 20, "F"); }
+    doc.setTextColor(28, 32, 35);
     doc.text(item.description || "", colX.desc + 6, y, { maxWidth: 240 });
     doc.text(capitalize(item.type), colX.type, y);
     doc.text(String(item.quantity), colX.qty, y);
