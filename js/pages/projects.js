@@ -3,6 +3,7 @@ import { renderSidebar, initThemeToggle } from "../components/sidebar.js";
 import { listClients } from "../services/client-service.js";
 import { listProjects, createProject, updateProject, getProject } from "../services/project-service.js";
 import { listInvoicesByProject } from "../services/invoice-service.js";
+import { listExpensesByProject } from "../services/expense-service.js";
 import { formatCurrency, formatDate, debounce } from "../utils/validators.js";
 import { showToast } from "../utils/toast.js";
 
@@ -204,8 +205,16 @@ async function openDetail(id) {
   detailOverlay.classList.add("modal-overlay--visible");
 
   const invoices = await listInvoicesByProject(id);
+  const expenses = await listExpensesByProject(id);
+
   const income = invoices.reduce((sum, inv) => sum + (inv.amountPaid || 0), 0);
   const outstanding = invoices.reduce((sum, inv) => sum + (inv.grandTotal - (inv.amountPaid || 0)), 0);
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount + e.vatAmount, 0);
+  const grossProfit = income - totalExpenses;
+  const profitPct = income > 0 ? (grossProfit / income) * 100 : null;
+
+  const byCategory = {};
+  expenses.forEach(e => { byCategory[e.category] = (byCategory[e.category] || 0) + e.amount + e.vatAmount; });
 
   body.innerHTML = `
     <div class="stat-grid" style="margin-bottom:20px;">
@@ -213,11 +222,20 @@ async function openDetail(id) {
       <div class="card"><div class="stat-card__label">Status</div><div style="font-size:15px;font-weight:600;">${project.status}</div></div>
       <div class="card"><div class="stat-card__label">Income Received</div><div class="stat-card__value up">${formatCurrency(income)}</div></div>
       <div class="card"><div class="stat-card__label">Outstanding</div><div class="stat-card__value">${formatCurrency(outstanding)}</div></div>
+      <div class="card"><div class="stat-card__label">Total Expenses</div><div class="stat-card__value down">${formatCurrency(totalExpenses)}</div></div>
+      <div class="card"><div class="stat-card__label">Gross Profit</div><div class="stat-card__value ${grossProfit >= 0 ? "up" : "down"}">${formatCurrency(grossProfit)}</div>${profitPct !== null ? `<div class="stat-card__hint">${profitPct.toFixed(1)}% margin</div>` : ""}</div>
     </div>
 
-    <div class="field__hint" style="margin-bottom:16px;">
-      Materials, Labour, Fuel, Equipment and Other Expenses will appear here once the Expenses module (Phase 3) is live — full profit % calculation follows automatically once that data exists.
-    </div>
+    <h3 style="font-size:15px;margin-bottom:10px;">Expenses by Category</h3>
+    ${Object.keys(byCategory).length ? `
+      <div class="table-wrap" style="margin-bottom:20px;">
+        <table>
+          <thead><tr><th>Category</th><th>Total</th></tr></thead>
+          <tbody>
+            ${Object.entries(byCategory).map(([cat, total]) => `<tr><td>${cat}</td><td class="mono">${formatCurrency(total)}</td></tr>`).join("")}
+          </tbody>
+        </table>
+      </div>` : `<div class="field__hint" style="margin-bottom:20px;">No expenses linked to this project yet — add one from the Expenses page and select this project, or create a Purchase Order from the Suppliers page.</div>`}
 
     <h3 style="font-size:15px;margin-bottom:10px;">Linked Invoices</h3>
     ${invoices.length ? `
