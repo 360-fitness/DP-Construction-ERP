@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Expenses · DP Construction ERP</title>
+<link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="../assets/images/company-logo.jpeg" alt="DP Construction logo" class="sidebar__logo" />
+      <div class="sidebar__brand-name">DP Construction</div>
+      <div class="sidebar__brand-sub">ERP System</div>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav"></nav>
+    <div class="sidebar__footer" id="sidebar-footer"></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__search">
+        <span class="topbar__search-icon">⌕</span>
+        <input type="text" id="expense-search" placeholder="Search by description, expense number…" />
+      </div>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme"></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <h1>Expenses</h1>
+          <div class="page-header__meta" id="expense-count-msg">Loading…</div>
+        </div>
+        <div class="flex gap-8">
+          <select id="category-filter" style="padding:9px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);">
+            <option value="">All Categories</option>
+          </select>
+          <button class="btn btn--primary" id="add-expense-btn">+ New Expense</button>
+        </div>
+      </div>
+
+      <div class="stat-grid" id="expense-stats"></div>
+
+      <div id="expenses-container">
+        <div class="loading-row"><span class="spinner"></span> Loading expenses…</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add / Edit Expense Modal -->
+<div class="modal-overlay" id="expense-modal-overlay">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 id="expense-modal-title" style="font-size:18px;">New Expense</h3>
+      <button class="modal__close" id="expense-modal-close-btn">✕</button>
+    </div>
+    <form id="expense-form">
+      <input type="hidden" id="e-id" />
+      <div class="form-row">
+        <div class="field">
+          <label for="e-date">Date *</label>
+          <input type="date" id="e-date" required />
+        </div>
+        <div class="field">
+          <label for="e-category">Category</label>
+          <select id="e-category"></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="e-description">Description *</label>
+        <input type="text" id="e-description" required />
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="e-amount">Amount (excl. VAT) *</label>
+          <input type="number" id="e-amount" min="0" step="0.01" required />
+        </div>
+        <div class="field">
+          <label for="e-vat">VAT Amount</label>
+          <input type="number" id="e-vat" min="0" step="0.01" value="0" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="e-payment-method">Payment Method</label>
+          <select id="e-payment-method"></select>
+        </div>
+        <div class="field">
+          <label for="e-project">Project (optional)</label>
+          <select id="e-project"><option value="">No linked project</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="e-supplier">Supplier (optional)</label>
+        <select id="e-supplier"><option value="">No linked supplier</option></select>
+      </div>
+      <div class="field">
+        <label for="e-receipt">Receipt Photo (optional)</label>
+        <input type="file" id="e-receipt" accept="image/*" />
+        <div class="field__hint">Stored directly in the database (no paid Storage plan needed) — best for a single photo under a few MB.</div>
+        <img id="e-receipt-preview" style="display:none;max-width:120px;border-radius:6px;margin-top:8px;border:1px solid var(--border);" />
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="expense-modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="expense-save-btn">Save Expense</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="../js/pages/expenses.js"></script>
+</body>
+</html>

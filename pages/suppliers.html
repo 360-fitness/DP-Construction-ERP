@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Suppliers · DP Construction ERP</title>
+<link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="../assets/images/company-logo.jpeg" alt="DP Construction logo" class="sidebar__logo" />
+      <div class="sidebar__brand-name">DP Construction</div>
+      <div class="sidebar__brand-sub">ERP System</div>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav"></nav>
+    <div class="sidebar__footer" id="sidebar-footer"></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__search">
+        <span class="topbar__search-icon">⌕</span>
+        <input type="text" id="supplier-search" placeholder="Search suppliers or purchase orders…" />
+      </div>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme"></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <h1>Suppliers</h1>
+          <div class="page-header__meta" id="supplier-count-msg">Loading…</div>
+        </div>
+        <div class="flex gap-8">
+          <button class="btn btn--secondary" id="tab-suppliers-btn">Suppliers</button>
+          <button class="btn btn--ghost" id="tab-purchases-btn">Purchase Orders</button>
+        </div>
+      </div>
+
+      <!-- Suppliers Tab -->
+      <div id="suppliers-tab">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <label class="checkbox-row"><input type="checkbox" id="show-archived" /> Show archived</label>
+          <button class="btn btn--primary" id="add-supplier-btn">+ New Supplier</button>
+        </div>
+        <div id="suppliers-container">
+          <div class="loading-row"><span class="spinner"></span> Loading suppliers…</div>
+        </div>
+      </div>
+
+      <!-- Purchases Tab -->
+      <div id="purchases-tab" style="display:none;">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <div></div>
+          <button class="btn btn--primary" id="add-purchase-btn">+ New Purchase Order</button>
+        </div>
+        <div id="purchases-container">
+          <div class="loading-row"><span class="spinner"></span> Loading purchase orders…</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add / Edit Supplier Modal -->
+<div class="modal-overlay" id="supplier-modal-overlay">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 id="supplier-modal-title" style="font-size:18px;">New Supplier</h3>
+      <button class="modal__close" id="supplier-modal-close-btn">✕</button>
+    </div>
+    <form id="supplier-form">
+      <input type="hidden" id="s-id" />
+      <div class="form-row">
+        <div class="field">
+          <label for="s-name">Supplier Name *</label>
+          <input type="text" id="s-name" required />
+        </div>
+        <div class="field">
+          <label for="s-contact">Contact Person</label>
+          <input type="text" id="s-contact" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="s-phone">Phone</label>
+          <input type="tel" id="s-phone" />
+        </div>
+        <div class="field">
+          <label for="s-email">Email</label>
+          <input type="email" id="s-email" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="s-terms">Credit Terms</label>
+          <input type="text" id="s-terms" placeholder="e.g. 30 days" />
+        </div>
+        <div class="field">
+          <label for="s-vat">VAT Number</label>
+          <input type="text" id="s-vat" />
+        </div>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="supplier-modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="supplier-save-btn">Save Supplier</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- New Purchase Order Modal -->
+<div class="modal-overlay" id="purchase-modal-overlay">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 style="font-size:18px;">New Purchase Order</h3>
+      <button class="modal__close" id="purchase-modal-close-btn">✕</button>
+    </div>
+    <div class="field__hint" style="margin-bottom:14px;">Creating a Purchase Order automatically records a matching Expense and updates the supplier's outstanding balance.</div>
+    <form id="purchase-form">
+      <div class="form-row">
+        <div class="field">
+          <label for="po-supplier">Supplier *</label>
+          <select id="po-supplier" required></select>
+        </div>
+        <div class="field">
+          <label for="po-project">Project (optional)</label>
+          <select id="po-project"><option value="">No linked project</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="po-date">Date</label>
+          <input type="date" id="po-date" required />
+        </div>
+        <div class="field">
+          <label for="po-invoice-number">Supplier Invoice #</label>
+          <input type="text" id="po-invoice-number" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="po-category">Category</label>
+        <select id="po-category"></select>
+      </div>
+      <div class="field">
+        <label for="po-description">Description</label>
+        <input type="text" id="po-description" placeholder="What was purchased?" />
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="po-amount">Amount (excl. VAT) *</label>
+          <input type="number" id="po-amount" min="0" step="0.01" required />
+        </div>
+        <div class="field">
+          <label for="po-vat">VAT Amount</label>
+          <input type="number" id="po-vat" min="0" step="0.01" value="0" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="po-status">Status</label>
+        <select id="po-status">
+          <option value="Ordered">Ordered</option>
+          <option value="Received">Received</option>
+          <option value="Paid">Paid (settles immediately, no outstanding balance)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="po-receipt">Receipt Photo (optional)</label>
+        <input type="file" id="po-receipt" accept="image/*" />
+        <div class="field__hint">Stored directly in the database (no paid Storage plan needed) — best for a single photo under a few MB.</div>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="purchase-modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="purchase-save-btn">Save Purchase Order</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="../js/pages/suppliers.js"></script>
+</body>
+</html>

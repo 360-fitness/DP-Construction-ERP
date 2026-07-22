@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Banking · DP Construction ERP</title>
+<link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="../assets/images/company-logo.jpeg" alt="DP Construction logo" class="sidebar__logo" />
+      <div class="sidebar__brand-name">DP Construction</div>
+      <div class="sidebar__brand-sub">ERP System</div>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav"></nav>
+    <div class="sidebar__footer" id="sidebar-footer"></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__search">
+        <span class="topbar__search-icon">⌕</span>
+        <input type="text" id="txn-search" placeholder="Search transactions…" />
+      </div>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme"></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <h1>Banking</h1>
+          <div class="page-header__meta">Manual ledger — enter transactions as they clear on your bank statement, then tick them off as reconciled.</div>
+        </div>
+        <div class="flex gap-8">
+          <select id="type-filter" style="padding:9px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);">
+            <option value="">All Types</option>
+            <option>Income</option><option>Expense</option><option>Transfer</option><option>Interest</option><option>Bank Charge</option>
+          </select>
+          <button class="btn btn--primary" id="add-txn-btn">+ New Transaction</button>
+        </div>
+      </div>
+
+      <div class="stat-grid" id="bank-stats"></div>
+
+      <div id="txn-container">
+        <div class="loading-row"><span class="spinner"></span> Loading transactions…</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- New Transaction Modal -->
+<div class="modal-overlay" id="txn-modal-overlay">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 style="font-size:18px;">New Bank Transaction</h3>
+      <button class="modal__close" id="txn-modal-close-btn">✕</button>
+    </div>
+    <form id="txn-form">
+      <div class="form-row">
+        <div class="field">
+          <label for="t-date">Date *</label>
+          <input type="date" id="t-date" required />
+        </div>
+        <div class="field">
+          <label for="t-type">Type</label>
+          <select id="t-type">
+            <option>Income</option><option>Expense</option><option>Transfer</option><option>Interest</option><option>Bank Charge</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="t-description">Description *</label>
+        <input type="text" id="t-description" required />
+      </div>
+      <div class="field">
+        <label for="t-amount">Amount *</label>
+        <input type="number" id="t-amount" min="0.01" step="0.01" required />
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="txn-modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="txn-save-btn">Add Transaction</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="../js/pages/banking.js"></script>
+</body>
+</html>
