@@ -128,7 +128,7 @@ export async function generateDocumentPDF(docData) {
 
   y += 20;
 
-  // ---- Terms / deposit / banking ----
+  // ---- Deposit / banking ----
   if (docData.depositNote) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
@@ -146,6 +146,7 @@ export async function generateDocumentPDF(docData) {
     y += 24;
   }
 
+  // ---- Terms & Conditions (paginated) ----
   if (docData.terms) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
@@ -165,6 +166,9 @@ export async function generateDocumentPDF(docData) {
       y += lineHeight;
     });
   }
+
+  doc.save(`${docData.number}.pdf`);
+}
 
 function formatZAR(n) {
   return new Intl.NumberFormat("en-ZA", { style: "currency", currency: "ZAR" }).format(Number(n) || 0);
