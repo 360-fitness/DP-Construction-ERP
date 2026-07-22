@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quotes · DP Construction ERP</title>
+<link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="../assets/images/company-logo.jpeg" alt="DP Construction logo" class="sidebar__logo" />
+      <div class="sidebar__brand-name">DP Construction</div>
+      <div class="sidebar__brand-sub">ERP System</div>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav"></nav>
+    <div class="sidebar__footer" id="sidebar-footer"></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__search">
+        <span class="topbar__search-icon">⌕</span>
+        <input type="text" id="quote-search" placeholder="Search by quote number, client…" />
+      </div>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme"></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <h1>Quotes</h1>
+          <div class="page-header__meta" id="quote-count-msg">Loading…</div>
+        </div>
+        <div class="flex gap-8">
+          <select id="status-filter" style="padding:9px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);">
+            <option value="">All Statuses</option>
+            <option>Draft</option><option>Sent</option><option>Accepted</option><option>Rejected</option><option>Expired</option>
+          </select>
+          <button class="btn btn--primary" id="add-quote-btn">+ New Quote</button>
+        </div>
+      </div>
+
+      <div id="quotes-container">
+        <div class="loading-row"><span class="spinner"></span> Loading quotes…</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add / Edit Quote Modal -->
+<div class="modal-overlay" id="quote-modal-overlay">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal__header">
+      <h3 id="quote-modal-title" style="font-size:18px;">New Quote</h3>
+      <button class="modal__close" id="quote-modal-close-btn">✕</button>
+    </div>
+    <form id="quote-form">
+      <input type="hidden" id="q-id" />
+      <div class="form-row">
+        <div class="field">
+          <label for="q-client">Client *</label>
+          <select id="q-client" required></select>
+        </div>
+        <div class="field">
+          <label for="q-expiry">Expiry Date</label>
+          <input type="date" id="q-expiry" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="q-project-desc">Project Description</label>
+        <input type="text" id="q-project-desc" placeholder="e.g. Double garage conversion" />
+      </div>
+      <div class="field">
+        <label for="q-site-address">Site Address</label>
+        <input type="text" id="q-site-address" />
+      </div>
+
+      <div id="q-line-items"></div>
+
+      <div class="form-row mt-16">
+        <div class="field">
+          <label>Deposit Required</label>
+          <div class="flex gap-8">
+            <select id="q-deposit-type" style="width:110px;padding:10px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);">
+              <option value="percentage">%</option>
+              <option value="fixed">R Fixed</option>
+            </select>
+            <input type="number" id="q-deposit-value" min="0" step="0.01" value="0" />
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="q-terms">Terms & Conditions</label>
+        <textarea id="q-terms"></textarea>
+      </div>
+
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="quote-modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="quote-save-btn">Save Quote</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="../js/pages/quotes.js"></script>
+</body>
+</html>

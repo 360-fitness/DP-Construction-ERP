@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Invoices · DP Construction ERP</title>
+<link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="../assets/images/company-logo.jpeg" alt="DP Construction logo" class="sidebar__logo" />
+      <div class="sidebar__brand-name">DP Construction</div>
+      <div class="sidebar__brand-sub">ERP System</div>
+    </div>
+    <nav class="sidebar__nav" id="sidebar-nav"></nav>
+    <div class="sidebar__footer" id="sidebar-footer"></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__search">
+        <span class="topbar__search-icon">⌕</span>
+        <input type="text" id="invoice-search" placeholder="Search by invoice number, client…" />
+      </div>
+      <div class="topbar__actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme"></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <h1>Invoices</h1>
+          <div class="page-header__meta" id="invoice-count-msg">Loading…</div>
+        </div>
+        <div class="flex gap-8">
+          <select id="status-filter" style="padding:9px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);">
+            <option value="">All Statuses</option>
+            <option>Outstanding</option><option>Partially Paid</option><option>Paid</option><option>Overdue</option>
+          </select>
+          <button class="btn btn--primary" id="add-invoice-btn">+ New Invoice</button>
+        </div>
+      </div>
+
+      <div id="invoices-container">
+        <div class="loading-row"><span class="spinner"></span> Loading invoices…</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add / Edit Invoice Modal -->
+<div class="modal-overlay" id="invoice-modal-overlay">
+  <div class="modal" style="max-width:720px;">
+    <div class="modal__header">
+      <h3 id="invoice-modal-title" style="font-size:18px;">New Invoice</h3>
+      <button class="modal__close" id="invoice-modal-close-btn">✕</button>
+    </div>
+    <form id="invoice-form">
+      <input type="hidden" id="i-id" />
+      <div class="form-row">
+        <div class="field">
+          <label for="i-client">Client *</label>
+          <select id="i-client" required></select>
+        </div>
+        <div class="field">
+          <label for="i-project">Project (optional)</label>
+          <select id="i-project"><option value="">No linked project</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="i-due">Due Date</label>
+        <input type="date" id="i-due" />
+      </div>
+
+      <div id="i-line-items"></div>
+
+      <div class="field mt-16">
+        <label for="i-terms">Notes / Terms</label>
+        <textarea id="i-terms"></textarea>
+      </div>
+
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="invoice-modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="invoice-save-btn">Save Invoice</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Record Payment Modal -->
+<div class="modal-overlay" id="payment-modal-overlay">
+  <div class="modal">
+    <div class="modal__header">
+      <h3 style="font-size:18px;">Record Payment</h3>
+      <button class="modal__close" id="payment-modal-close-btn">✕</button>
+    </div>
+    <div id="payment-invoice-summary" class="card" style="background:var(--bg);box-shadow:none;margin-bottom:18px;"></div>
+    <form id="payment-form">
+      <input type="hidden" id="pay-invoice-id" />
+      <div class="form-row">
+        <div class="field">
+          <label for="pay-date">Date</label>
+          <input type="date" id="pay-date" required />
+        </div>
+        <div class="field">
+          <label for="pay-amount">Amount *</label>
+          <input type="number" id="pay-amount" min="0.01" step="0.01" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="pay-method">Method</label>
+          <select id="pay-method">
+            <option>EFT</option><option>Cash</option><option>Card</option><option>Cheque</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="pay-reference">Reference</label>
+          <input type="text" id="pay-reference" placeholder="e.g. bank ref number" />
+        </div>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="payment-modal-cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="payment-save-btn">Record Payment</button>
+      </div>
+    </form>
+
+    <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin:22px 0 10px;">Payment History</h4>
+    <div id="payment-history"></div>
+  </div>
+</div>
+
+<script type="module" src="../js/pages/invoices.js"></script>
+</body>
+</html>
