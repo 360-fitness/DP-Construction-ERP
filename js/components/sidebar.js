@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { key: "invoices", label: "Invoices", href: "invoices.html", icon: "▥" },
   { key: "suppliers", label: "Suppliers", href: "suppliers.html", icon: "▧" },
   { key: "expenses", label: "Expenses", href: "expenses.html", icon: "▨" },
+  { key: "banking", label: "Banking", href: "banking.html", icon: "▢" },
   { key: "payroll", label: "Payroll", href: "payroll.html", icon: "◫" },
   { key: "employees", label: "Employees", href: "employees.html", icon: "◉" },
   { key: "timesheets", label: "Timesheets", href: "timesheets.html", icon: "◷" },
