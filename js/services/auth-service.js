@@ -23,9 +23,9 @@ export const ROLES = {
 // Which top-level modules each role can see. Used by the sidebar
 // and by each page's own guard check.
 export const ROLE_PERMISSIONS = {
-  [ROLES.ADMIN]: ["dashboard", "clients", "quotes", "projects", "invoices", "suppliers", "expenses", "payroll", "employees", "timesheets", "reports", "settings"],
-  [ROLES.DIRECTOR]: ["dashboard", "clients", "quotes", "projects", "invoices", "suppliers", "expenses", "payroll", "employees", "timesheets", "reports"],
-  [ROLES.BOOKKEEPER]: ["dashboard", "clients", "quotes", "invoices", "suppliers", "expenses", "payroll", "reports"],
+  [ROLES.ADMIN]: ["dashboard", "clients", "quotes", "projects", "invoices", "suppliers", "expenses", "banking", "payroll", "employees", "timesheets", "reports", "settings"],
+  [ROLES.DIRECTOR]: ["dashboard", "clients", "quotes", "projects", "invoices", "suppliers", "expenses", "banking", "payroll", "employees", "timesheets", "reports"],
+  [ROLES.BOOKKEEPER]: ["dashboard", "clients", "quotes", "invoices", "suppliers", "expenses", "banking", "payroll", "reports"],
   [ROLES.EMPLOYEE]: ["dashboard", "timesheets"]
 };
 
