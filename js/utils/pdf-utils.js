@@ -149,14 +149,22 @@ export async function generateDocumentPDF(docData) {
   if (docData.terms) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
-    doc.text("Terms & Conditions", margin, y); y += 14;
+    if (y > 740) { doc.addPage(); y = 56; }
+    doc.text("Terms & Conditions", margin, y); y += 16;
+
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
-    doc.text(docData.terms, margin, y, { maxWidth: pageWidth - margin * 2 });
+    const termsLines = doc.splitTextToSize(docData.terms, pageWidth - margin * 2);
+    const lineHeight = 12;
+    termsLines.forEach((line) => {
+      if (y > 780) {
+        doc.addPage();
+        y = 56;
+      }
+      doc.text(line, margin, y);
+      y += lineHeight;
+    });
   }
-
-  doc.save(`${docData.number}.pdf`);
-}
 
 function formatZAR(n) {
   return new Intl.NumberFormat("en-ZA", { style: "currency", currency: "ZAR" }).format(Number(n) || 0);
