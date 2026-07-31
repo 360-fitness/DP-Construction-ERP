@@ -28,6 +28,7 @@ export async function createQuote(user, data) {
     clientSnapshot: data.clientSnapshot || null, // { name, company, email, phone, address, vatNumber }
     projectDescription: data.projectDescription || "",
     siteAddress: data.siteAddress || "",
+     projectScope: data.projectScope || "",
     items: data.items || [],
     discountType: data.discountType || "percentage",
     discountValue: Number(data.discountValue) || 0,
