@@ -91,7 +91,8 @@ document.getElementById("settings-form").addEventListener("submit", async (e) =>
       },
       vatRate: parseFloat(document.getElementById("s-vat-rate").value) || 15,
       quoteValidityDays: parseInt(document.getElementById("s-quote-validity").value) || 30,
-      termsAndConditions: document.getElementById("s-terms").value.trim(),
+     termsAndConditions: document.getElementById("s-terms").value.trim(),
+      invoiceTermsAndConditions: document.getElementById("s-invoice-terms").value.trim()
       ...(logoUrl ? { logoUrl } : {})
     };
 
