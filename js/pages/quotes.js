@@ -151,6 +151,7 @@ async function openEditModal(id) {
   document.getElementById("q-expiry").value = quote.expiryDate || "";
   document.getElementById("q-project-desc").value = quote.projectDescription || "";
   document.getElementById("q-site-address").value = quote.siteAddress || "";
+  document.getElementById("q-project-scope").value = quote.projectScope || "";
   document.getElementById("q-deposit-type").value = quote.depositType || "percentage";
   document.getElementById("q-deposit-value").value = quote.depositValue || 0;
   document.getElementById("q-terms").value = quote.terms || "";
@@ -180,6 +181,7 @@ form.addEventListener("submit", async (e) => {
     clientSnapshot: client ? { name: client.name, company: client.company, email: client.email, phone: client.phone, address: client.address, vatNumber: client.vatNumber } : null,
     projectDescription: document.getElementById("q-project-desc").value.trim(),
     siteAddress: document.getElementById("q-site-address").value.trim(),
+    projectScope: document.getElementById("q-project-scope").value.trim(),
     items: lineState.items,
     discountType: lineState.discountType,
     discountValue: lineState.discountValue,
@@ -235,6 +237,7 @@ async function handlePdf(id) {
     date: formatDate(q.createdAt),
     expiryOrDueDate: q.expiryDate,
     client: q.clientSnapshot || {},
+    projectScope: q.projectScope,
     items: q.items,
     totals: { subtotal: q.subtotal, discountAmount: q.discountAmount, vatAmount: q.vatAmount, grandTotal: q.grandTotal },
     vatRate: q.vatRate,
@@ -265,6 +268,7 @@ async function handleConvertToProject(id) {
     quoteId: q.id,
     name: q.projectDescription || `Project for ${q.clientSnapshot?.name || "client"}`,
     siteAddress: q.siteAddress,
+    notes: q.projectScope || "",
     status: "Planning"
   });
   await linkQuoteToProject(currentUser, q.id, project.id);
