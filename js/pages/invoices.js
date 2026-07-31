@@ -130,7 +130,7 @@ function openAddModal() {
   invoiceForm.reset();
   document.getElementById("i-id").value = "";
   document.getElementById("invoice-modal-title").textContent = "New Invoice";
-  document.getElementById("i-terms").value = companySettings?.termsAndConditions || "";
+ document.getElementById("i-terms").value = companySettings?.invoiceTermsAndConditions || "";
   editor = mountLineItemEditor(document.getElementById("i-line-items"), { vatRate: companySettings?.vatRate ?? 15 });
   invoiceOverlay.classList.add("modal-overlay--visible");
 }
