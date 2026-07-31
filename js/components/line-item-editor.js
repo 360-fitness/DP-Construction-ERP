@@ -6,10 +6,10 @@
 // pages can each mount their own instance safely.
 // =============================================================
 
-import { computeTotals, lineTotal, emptyLineItem } from "../utils/line-items.js";
+import { computeTotals, lineTotal, emptyLineItem, LINE_ITEM_TYPES } from "../utils/line-items.js";
 import { formatCurrency } from "../utils/validators.js";
 
-const TYPE_LABELS = { labour: "Labour", material: "Material", equipment: "Equipment" };
+const TYPE_LABELS = LINE_ITEM_TYPES;
 
 export function mountLineItemEditor(container, {
   items = [emptyLineItem()],
@@ -28,7 +28,7 @@ export function mountLineItemEditor(container, {
       <div class="table-wrap" style="margin-bottom:14px;">
         <table>
           <thead>
-            <tr><th style="width:110px;">Type</th><th>Description</th><th style="width:80px;">Qty</th><th style="width:120px;">Unit Price</th><th style="width:120px;">Total</th><th style="width:40px;"></th></tr>
+            <tr><th style="width:190px;">Type</th><th>Description</th><th style="width:80px;">Qty</th><th style="width:120px;">Unit Price</th><th style="width:120px;">Total</th><th style="width:40px;"></th></tr>
           </thead>
           <tbody>
             ${state.items.map((item, i) => rowHtml(item, i)).join("")}
