@@ -9,6 +9,22 @@
 
 let jsPDFPromise = null;
 
+// Short labels for the PDF's narrow Type column — the full descriptive
+// labels ("Transport To/From Site", "Additional Site & Project Costs")
+// are used in the on-screen editor but would overflow this column, so
+// the PDF gets a shorter form of the same thing.
+const PDF_TYPE_LABELS = {
+  labour: "Labour",
+  material: "Material",
+  equipment: "Equipment",
+  transport: "Transport",
+  additional: "Additional Costs"
+};
+
+function typeLabel(type) {
+  return PDF_TYPE_LABELS[type] || capitalize(type);
+}
+
 function loadJsPDF() {
   if (jsPDFPromise) return jsPDFPromise;
   jsPDFPromise = new Promise((resolve, reject) => {
@@ -23,8 +39,9 @@ function loadJsPDF() {
 }
 
 // Writes a possibly multi-line string (containing literal \n characters,
-// e.g. from a <textarea>) line by line, returning the y position after it.
-function writeMultilineText(doc, text, x, y, { maxWidth, lineHeight = 12 } = {}) {
+// e.g. from a <textarea>, or address lines) one line at a time, wrapping
+// long lines too, and returns the y position after the last line.
+function writeMultilineText(doc, text, x, y, { maxWidth, lineHeight = 13 } = {}) {
   const rawLines = String(text).split(/\r?\n/);
   rawLines.forEach((rawLine) => {
     const wrapped = maxWidth ? doc.splitTextToSize(rawLine, maxWidth) : [rawLine];
@@ -133,7 +150,7 @@ export async function generateDocumentPDF(docData) {
     if (i % 2 === 1) { doc.setFillColor(241, 239, 233); doc.rect(margin, y - 14, pageWidth - margin * 2, 20, "F"); }
     doc.setTextColor(28, 32, 35);
     doc.text(item.description || "", colX.desc + 6, y, { maxWidth: 240 });
-    doc.text(capitalize(item.type), colX.type, y);
+    doc.text(typeLabel(item.type), colX.type, y);
     doc.text(String(item.quantity), colX.qty, y);
     doc.text(formatZAR(item.unitPrice), colX.price, y);
     doc.text(formatZAR((item.quantity || 0) * (item.unitPrice || 0)), colX.total, y, { align: "right" });
