@@ -1,10 +1,21 @@
 // =============================================================
 // LINE ITEM CALCULATIONS
 // Shared by Quotes and Invoices — both use the same
-// labour/materials/equipment line-item + discount + VAT structure.
+// labour/materials/equipment/etc. line-item + discount + VAT structure.
 // =============================================================
 
-// item: { type: 'labour'|'material'|'equipment', description, quantity, unitPrice }
+// Single source of truth for line item types, used by the editor
+// (line-item-editor.js) and the PDF generator (pdf-utils.js), so
+// both always agree on what a type key means.
+export const LINE_ITEM_TYPES = {
+  labour: "Labour",
+  material: "Material",
+  equipment: "Equipment",
+  transport: "Transport To/From Site",
+  additional: "Additional Site & Project Costs"
+};
+
+// item: { type: 'labour'|'material'|'equipment'|'transport'|'additional', description, quantity, unitPrice }
 export function lineTotal(item) {
   return (Number(item.quantity) || 0) * (Number(item.unitPrice) || 0);
 }
