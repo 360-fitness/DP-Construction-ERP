@@ -146,7 +146,7 @@ export async function generateDocumentPDF(docData) {
 
 
   // ---- Line items table ----
-  const colX = { desc: margin, type: margin + 260, qty: margin + 340, price: margin + 400, total: pageWidth - margin };
+ const colX = { desc: margin, type: margin + 210, qty: margin + 300, price: pageWidth - margin - 90, total: pageWidth - margin };
   doc.setFillColor(28, 32, 35);
   doc.rect(margin, y, pageWidth - margin * 2, 22, "F");
   doc.setTextColor(255, 255, 255);
@@ -155,7 +155,7 @@ export async function generateDocumentPDF(docData) {
   doc.text("Description", colX.desc + 6, y + 15);
   doc.text("Type", colX.type, y + 15);
   doc.text("Qty", colX.qty, y + 15);
-  doc.text("Unit Price", colX.price, y + 15);
+  doc.text("Unit Price", colX.price, y + 15, { align: "right" });
   doc.text("Total", colX.total, y + 15, { align: "right" });
   y += 22;
 
@@ -170,10 +170,10 @@ export async function generateDocumentPDF(docData) {
     if (y > 720) { doc.addPage(); y = 56; }
     if (i % 2 === 1) { doc.setFillColor(241, 239, 233); doc.rect(margin, y - 14, pageWidth - margin * 2, 20, "F"); }
     doc.setTextColor(28, 32, 35);
-    doc.text(item.description || "", colX.desc + 6, y, { maxWidth: 240 });
+    doc.text(item.description || "", colX.desc + 6, y, { maxWidth: 190 });
     doc.text(typeLabel(item.type), colX.type, y);
     doc.text(String(item.quantity), colX.qty, y);
-    doc.text(formatZAR(item.unitPrice), colX.price, y);
+    doc.text(formatZAR(item.unitPrice), colX.price, y, { align: "right" });
     doc.text(formatZAR((item.quantity || 0) * (item.unitPrice || 0)), colX.total, y, { align: "right" });
     y += 20;
   });
