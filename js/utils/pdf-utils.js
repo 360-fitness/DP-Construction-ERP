@@ -124,6 +124,27 @@ export async function generateDocumentPDF(docData) {
 
   y += 20;
 
+  // ---- Project Scope / Additional Context (Quotes only) ----
+  if (docData.projectScope) {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(28, 32, 35);
+    if (y > 700) { doc.addPage(); y = 56; }
+    doc.text("Project Scope", margin, y); y += 16;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    const scopeLines = doc.splitTextToSize(docData.projectScope, pageWidth - margin * 2);
+    const scopeLineHeight = 12;
+    scopeLines.forEach((line) => {
+      if (y > 780) { doc.addPage(); y = 56; }
+      doc.text(line, margin, y);
+      y += scopeLineHeight;
+    });
+    y += 16;
+  }
+
+
   // ---- Line items table ----
   const colX = { desc: margin, type: margin + 260, qty: margin + 340, price: margin + 400, total: pageWidth - margin };
   doc.setFillColor(28, 32, 35);
