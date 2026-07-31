@@ -33,7 +33,8 @@ async function loadSettings() {
   setVal("s-bank-type", settings.bank?.accountType || "Cheque");
   setVal("s-vat-rate", settings.vatRate ?? 15);
   setVal("s-quote-validity", settings.quoteValidityDays ?? 30);
-  setVal("s-terms", settings.termsAndConditions);
+ setVal("s-terms", settings.termsAndConditions);
+  setVal("s-invoice-terms", settings.invoiceTermsAndConditions);
 
   if (settings.logoUrl) {
     const preview = document.getElementById("logo-preview");
