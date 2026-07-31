@@ -288,8 +288,8 @@ async function handleConvertToInvoice(id) {
     discountType: q.discountType,
     discountValue: q.discountValue,
     vatRate: q.vatRate,
-    dueDate: dueDate.toISOString().slice(0, 10),
-    terms: q.terms
+   dueDate: dueDate.toISOString().slice(0, 10),
+    terms: companySettings?.invoiceTermsAndConditions || ""
   });
   await linkQuoteToInvoice(currentUser, q.id, invoice.id);
   showToast(`Invoice ${invoice.invoiceNumber} created.`, "success");
