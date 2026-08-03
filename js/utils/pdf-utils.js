@@ -53,7 +53,7 @@ function writeMultilineText(doc, text, x, y, { maxWidth, lineHeight = 13 } = {})
   return y;
 }
 
-// docData: { docType: 'QUOTE'|'INVOICE', number, date, expiryOrDueDate, client, items, totals, discountType, discountValue, vatRate, terms, depositNote, company }
+// docData: { docType: 'QUOTE'|'INVOICE', number, date, expiryOrDueDate, client, items, totals, discountType, discountValue, vatRate, terms, depositNote, company, projectScope }
 export async function generateDocumentPDF(docData) {
   const jsPDF = await loadJsPDF();
   const doc = new jsPDF({ unit: "pt", format: "a4" });
@@ -144,9 +144,8 @@ export async function generateDocumentPDF(docData) {
     y += 16;
   }
 
-
   // ---- Line items table ----
- const colX = { desc: margin, type: margin + 210, qty: margin + 300, price: pageWidth - margin - 90, total: pageWidth - margin };
+  const colX = { desc: margin, type: margin + 210, qty: margin + 300, price: pageWidth - margin - 90, total: pageWidth - margin };
   doc.setFillColor(28, 32, 35);
   doc.rect(margin, y, pageWidth - margin * 2, 22, "F");
   doc.setTextColor(255, 255, 255);
@@ -166,16 +165,26 @@ export async function generateDocumentPDF(docData) {
   doc.setTextColor(28, 32, 35);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
+  const descMaxWidth = 190;
+  const rowLineHeight = 11;
   docData.items.forEach((item, i) => {
-    if (y > 720) { doc.addPage(); y = 56; }
-    if (i % 2 === 1) { doc.setFillColor(241, 239, 233); doc.rect(margin, y - 14, pageWidth - margin * 2, 20, "F"); }
+    // A long description wraps onto multiple lines — measure that first
+    // so the row (and its shaded background, and the next row) actually
+    // grows to fit, instead of overlapping the wrapped text.
+    const descLines = doc.splitTextToSize(item.description || "", descMaxWidth);
+    const rowHeight = Math.max(20, descLines.length * rowLineHeight + 6);
+
+    if (y + rowHeight > 760) { doc.addPage(); y = 56; }
+    if (i % 2 === 1) { doc.setFillColor(241, 239, 233); doc.rect(margin, y - 14, pageWidth - margin * 2, rowHeight, "F"); }
     doc.setTextColor(28, 32, 35);
-    doc.text(item.description || "", colX.desc + 6, y, { maxWidth: 190 });
+    descLines.forEach((line, li) => {
+      doc.text(line, colX.desc + 6, y + li * rowLineHeight);
+    });
     doc.text(typeLabel(item.type), colX.type, y);
     doc.text(String(item.quantity), colX.qty, y);
     doc.text(formatZAR(item.unitPrice), colX.price, y, { align: "right" });
     doc.text(formatZAR((item.quantity || 0) * (item.unitPrice || 0)), colX.total, y, { align: "right" });
-    y += 20;
+    y += rowHeight;
   });
 
   y += 16;
